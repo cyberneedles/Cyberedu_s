@@ -2,7 +2,15 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
-  content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
+  content: [
+    "./index.html",
+    "./{src,client,server,shared}/**/*.{js,ts,jsx,tsx,html,vue,svelte}",
+    "./client/**/*.{js,ts,jsx,tsx,html,vue,svelte}",
+    "./server/**/*.{js,ts,jsx,tsx,html,vue,svelte}",
+    "./shared/**/*.{js,ts,jsx,tsx,html,vue,svelte}",
+    // You might also need to include specific paths if Tailwind classes are used in other places like build scripts or specific utility files outside common source folders
+    // For example: "./some-other-folder/**/*.js"
+  ],
   theme: {
     extend: {
       borderRadius: {
