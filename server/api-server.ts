@@ -13,12 +13,14 @@ declare module 'express-session' {
 // Initialize Firebase Admin SDK
 if (!admin.apps.length) {
   try {
+    const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT;
+    if (!serviceAccountJson) {
+      throw new Error("FIREBASE_SERVICE_ACCOUNT environment variable is not set.");
+    }
+    const serviceAccount = JSON.parse(serviceAccountJson);
+
     admin.initializeApp({
-      credential: admin.credential.cert({
-        projectId: "cyberedu-a094a",
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-      }),
+      credential: admin.credential.cert(serviceAccount),
     });
     console.log("Firebase Admin SDK initialized successfully");
   } catch (error) {
