@@ -3,10 +3,15 @@
   "version": "1.0.0",
   "description": "CyberEdu Learning Platform",
   "scripts": {
-    "dev": "concurrently \"tsx -r dotenv/config server/index.ts\" \"cd client && vite\"",
-    "build": "tsc --project ./tsconfig.json && vite build",
-    "preview": "vite preview",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "tsx -r dotenv/config server/index.ts",
+    "dev:client": "cd client && npm run dev",
+    "build": "bash render-build.sh",
+    "build:client": "cd client && npm run build",
+    "start": "tsx -r dotenv/config dist/server/index.ts",
+    "start:prod": "node dist/server/index.js",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
     "format": "prettier --write \"**/*.{ts,tsx,css,md,json}\" --config ./.prettierrc",
     "drizzle:generate": "cross-env tsx --env-file=.env node_modules/.bin/drizzle-kit generate",
     "drizzle:migrate": "cross-env tsx --env-file=.env node_modules/.bin/drizzle-kit migrate"
