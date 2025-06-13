@@ -32,7 +32,16 @@ const PORT = 5001;
 
 // Enable CORS for frontend
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5184', 'http://localhost:5185'],
+  origin: [
+    'http://localhost:5173', 
+    'http://localhost:5174', 
+    'http://localhost:5175', 
+    'http://localhost:5184', 
+    'http://localhost:5185',
+    // Add Render domains (will be replaced with actual domain)
+    process.env.RENDER_EXTERNAL_URL,
+    process.env.FRONTEND_URL
+  ].filter(Boolean), // Remove undefined values
   credentials: true
 }));
 

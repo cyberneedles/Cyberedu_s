@@ -5,7 +5,7 @@ import { createServer } from "node:http";
 import { log } from "./vite.js";
 
 const app = express();
-const PORT = 5001; // Fixed port to match previous working state
+const PORT = process.env.PORT || 5001; // Use Render's PORT or fallback to 5001
 
 // Mount API routes
 app.use('/api', apiApp);
