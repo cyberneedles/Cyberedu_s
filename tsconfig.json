@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "strict": false,
     "skipLibCheck": true,
@@ -18,7 +18,10 @@
     },
     "jsx": "react-jsx",
     "types": ["node", "express"],
-    "noEmit": true
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
   "include": ["server/**/*", "shared/**/*", "client/**/*"],
   "exclude": ["node_modules", "dist"]

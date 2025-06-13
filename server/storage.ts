@@ -21,7 +21,7 @@ import {
   type FAQ,
   type InsertFAQ
 } from "@shared/schema";
-import { db, pool } from "./db";
+import { db, pool } from "./db.js";
 import { eq, and } from "drizzle-orm";
 
 export interface IStorage {
@@ -253,12 +253,12 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(testimonials).where(eq(testimonials.courseId, courseId));
   }
 
-  async createTestimonial(testimonial: InsertTestimonial): Promise<Testimonial> {
-    const [testimonial] = await db
+  async createTestimonial(insertTestimonial: InsertTestimonial): Promise<Testimonial> {
+    const [newTestimonial] = await db
       .insert(testimonials)
-      .values(testimonial)
+      .values(insertTestimonial)
       .returning();
-    return testimonial;
+    return newTestimonial;
   }
 
   async updateTestimonial(id: number, testimonialUpdate: Partial<InsertTestimonial>): Promise<Testimonial | undefined> {
@@ -677,13 +677,13 @@ export class MemStorage implements IStorage {
 
   async createTestimonial(insertTestimonial: InsertTestimonial): Promise<Testimonial> {
     const id = this.currentId++;
-    const testimonial: Testimonial = {
+    const newTestimonial: Testimonial = {
       ...insertTestimonial,
       id,
       createdAt: new Date(),
     };
-    this.testimonials.set(id, testimonial);
-    return testimonial;
+    this.testimonials.set(id, newTestimonial);
+    return newTestimonial;
   }
 
   async updateTestimonial(id: number, testimonialUpdate: Partial<InsertTestimonial>): Promise<Testimonial | undefined> {
@@ -709,12 +709,12 @@ export class MemStorage implements IStorage {
 
   async createFAQ(insertFaq: InsertFAQ): Promise<FAQ> {
     const id = this.currentId++;
-    const faq: FAQ = {
+    const newFaq: FAQ = {
       ...insertFaq,
       id,
     };
-    this.faqs.set(id, faq);
-    return faq;
+    this.faqs.set(id, newFaq);
+    return newFaq;
   }
 }
 
