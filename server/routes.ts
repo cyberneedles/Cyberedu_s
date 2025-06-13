@@ -52,7 +52,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   }));
 
   // Serve static files from client directory
-  app.use(express.static(path.join(__dirname, '..', 'client')));
+  app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
 
   // Test database connection endpoint
   app.get("/api/test-db", async (req, res) => {
@@ -72,7 +72,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Catch-all route to serve React app
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'client', 'index.html'));
+    res.sendFile(path.join(__dirname, '..', 'client', 'dist', 'index.html'));
   });
 
   return server;
