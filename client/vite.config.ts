@@ -2,6 +2,10 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { fileURLToPath } from "url";
+import tailwindcss from "tailwindcss";
+import autoprefixer from "autoprefixer";
+import tailwindcssNesting from "tailwindcss/nesting";
+import postcssImport from "postcss-import";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,6 +31,16 @@ export default defineConfig({
         secure: false,
       }
     }
+  },
+  css: {
+    postcss: {
+      plugins: [
+        postcssImport,
+        tailwindcssNesting,
+        tailwindcss,
+        autoprefixer,
+      ],
+    },
   },
   esbuild: {
     // Completely bypass TypeScript checking
