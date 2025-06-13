@@ -57,7 +57,7 @@ export const courses = pgTable("courses", {
   toolsAndTechnologies: text("tools_and_technologies"),
   whatYouWillLearn: text("what_you_will_learn"), // What You'll Learn section
   
-  isActive: boolean("is_active").default(true).notNull(),
+  isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -96,7 +96,7 @@ export const blogPosts = pgTable("blog_posts", {
   category: text("category").notNull(),
   featuredImage: text("featured_image"),
   authorId: integer("author_id").references(() => users.id),
-  isPublished: boolean("is_published").default(false).notNull(),
+  isPublished: boolean("is_published").default(false),
   readingTime: integer("reading_time").default(5).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
@@ -112,7 +112,7 @@ export const testimonials = pgTable("testimonials", {
   jobTitle: text("job_title"),
   company: text("company"),
   image: text("image"),
-  isApproved: boolean("is_approved").default(false).notNull(),
+  isApproved: boolean("is_approved").default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -122,7 +122,7 @@ export const faqs = pgTable("faqs", {
   answer: text("answer").notNull(),
   category: text("category").notNull(),
   order: integer("order").default(0).notNull(),
-  isActive: boolean("is_active").default(true).notNull(),
+  isActive: boolean("is_active").default(true),
 });
 
 // Insert schemas
