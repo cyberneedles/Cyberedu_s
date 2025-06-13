@@ -1,20 +1,23 @@
 import { execSync } from 'child_process';
 import fs from 'fs';
 
-console.log('🚀 Starting simple build process...');
+console.log('🚀 Starting production build process...');
 
 try {
   // Install dependencies
   console.log('📦 Installing dependencies...');
   execSync('npm install', { stdio: 'inherit' });
 
-  // Set environment variables to skip TypeScript
-  process.env.SKIP_TYPESCRIPT = 'true';
+  // Set environment variables
   process.env.NODE_ENV = 'production';
 
-  // Build client with Vite only (no TypeScript checking)
+  // Build client with Vite
   console.log('🏗️ Building client with Vite...');
   execSync('cd client && npx vite build --mode production', { stdio: 'inherit' });
+
+  // Compile server TypeScript to JavaScript
+  console.log('🏗️ Compiling server TypeScript...');
+  execSync('npx tsc --project tsconfig.server.json', { stdio: 'inherit' });
 
   // Create dist directory
   console.log('📁 Creating dist directory...');
@@ -22,13 +25,9 @@ try {
     fs.mkdirSync('dist');
   }
   
-  // Copy server files to dist
-  console.log('📁 Copying server files...');
-  execSync('cp -r server dist/', { stdio: 'inherit' });
-  
-  // Copy shared files to dist
-  console.log('📁 Copying shared files...');
-  execSync('cp -r shared dist/', { stdio: 'inherit' });
+  // Copy compiled server files
+  console.log('📁 Copying compiled server files...');
+  execSync('cp -r server-compiled dist/server', { stdio: 'inherit' });
   
   // Copy package.json and other necessary files
   execSync('cp package.json dist/', { stdio: 'inherit' });
@@ -38,7 +37,7 @@ try {
   console.log('📁 Copying client build...');
   execSync('cp -r client/dist dist/client', { stdio: 'inherit' });
 
-  console.log('✅ Simple build completed successfully!');
+  console.log('✅ Production build completed successfully!');
 } catch (error) {
   console.error('❌ Build failed:', error.message);
   process.exit(1);

@@ -1,12 +1,5 @@
-import { 
-  users, 
-  courses, 
-  quizzes, 
-  leads, 
-  blogPosts, 
-  testimonials, 
-  faqs,
-  type User, 
+import {
+  type User,
   type InsertUser,
   type Course,
   type InsertCourse,
@@ -19,8 +12,15 @@ import {
   type Testimonial,
   type InsertTestimonial,
   type FAQ,
-  type InsertFAQ
-} from "@shared/schema";
+  type InsertFAQ,
+  users,
+  courses,
+  quizzes,
+  leads,
+  blogPosts,
+  testimonials,
+  faqs,
+} from "../shared/schema.js";
 import { db, pool } from "./db.js";
 import { eq, and } from "drizzle-orm";
 
