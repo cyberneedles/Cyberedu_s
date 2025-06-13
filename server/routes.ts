@@ -5,6 +5,12 @@ import session from 'express-session';
 import { pool } from "./db.js";
 import { insertLeadSchema, insertBlogPostSchema, insertTestimonialSchema } from "../shared/schema.js";
 import { z } from "zod";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Get __dirname equivalent for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Simple in-memory session store for development
 const adminSessions = new Map<string, { isAdmin: boolean; adminEmail: string; timestamp: number }>();
@@ -45,6 +51,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     name: 'cyberedus.session'
   }));
 
+  // Serve static files from client directory
+  app.use(express.static(path.join(__dirname, '..', 'client')));
+
   // Test database connection endpoint
   app.get("/api/test-db", async (req, res) => {
     try {
@@ -59,6 +68,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Health check endpoint
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
+  });
+
+  // Catch-all route to serve React app
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'client', 'index.html'));
   });
 
   return server;
