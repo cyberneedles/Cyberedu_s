@@ -228,10 +228,10 @@ export class DatabaseStorage implements IStorage {
     return post;
   }
 
-  async updateBlogPost(id: number, postUpdate: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
+  async updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
     const [updatedPost] = await db
       .update(blogPosts)
-      .set(postUpdate)
+      .set(post)
       .where(eq(blogPosts.id, id))
       .returning();
     return updatedPost || undefined;
@@ -253,10 +253,10 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(testimonials).where(eq(testimonials.courseId, courseId));
   }
 
-  async createTestimonial(insertTestimonial: InsertTestimonial): Promise<Testimonial> {
+  async createTestimonial(testimonial: InsertTestimonial): Promise<Testimonial> {
     const [testimonial] = await db
       .insert(testimonials)
-      .values(insertTestimonial)
+      .values(testimonial)
       .returning();
     return testimonial;
   }
@@ -284,10 +284,10 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(faqs);
   }
 
-  async createFAQ(insertFaq: InsertFAQ): Promise<FAQ> {
+  async createFAQ(faq: InsertFAQ): Promise<FAQ> {
     const [faq] = await db
       .insert(faqs)
-      .values(insertFaq)
+      .values(faq)
       .returning();
     return faq;
   }
@@ -575,6 +575,10 @@ export class MemStorage implements IStorage {
     return updated;
   }
 
+  async deleteCourse(id: number): Promise<boolean> {
+    return this.courses.delete(id);
+  }
+
   async getQuizByCourseId(courseId: number): Promise<Quiz | undefined> {
     return Array.from(this.quizzes.values()).find(quiz => quiz.courseId === courseId);
   }
@@ -600,29 +604,20 @@ export class MemStorage implements IStorage {
   }
 
   async createLead(insertLead: InsertLead): Promise<Lead> {
-    console.log("Storage: Attempting to create lead with data:", insertLead);
-    try {
-      const [lead] = await db
-        .insert(leads)
-        .values(insertLead)
-        .returning();
-      console.log("Storage: Lead created successfully:", lead);
-      return lead;
-    } catch (error) {
-      console.error("Storage: Error creating lead:", error);
-      throw error;
-    }
+    const id = this.currentId++;
+    const lead: Lead = {
+      ...insertLead,
+      id,
+      createdAt: new Date(),
+    };
+    this.leads.set(id, lead);
+    return lead;
   }
 
   async getAllLeads(): Promise<Lead[]> {
-    try {
-      const leadsData = await db.select().from(leads);
-      console.log("Storage: Fetched leads:", leadsData);
-      return leadsData;
-    } catch (error) {
-      console.error("Storage: Error fetching all leads:", error);
-      throw error;
-    }
+    return Array.from(this.leads.values()).sort((a, b) => 
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
   }
 
   async getAllBlogPosts(published?: boolean): Promise<BlogPost[]> {
@@ -652,12 +647,12 @@ export class MemStorage implements IStorage {
   }
 
   async updateBlogPost(id: number, postUpdate: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
-    const [updatedPost] = await db
-      .update(blogPosts)
-      .set(postUpdate)
-      .where(eq(blogPosts.id, id))
-      .returning();
-    return updatedPost || undefined;
+    const existing = this.blogPosts.get(id);
+    if (!existing) return undefined;
+    
+    const updated: BlogPost = { ...existing, ...postUpdate };
+    this.blogPosts.set(id, updated);
+    return updated;
   }
 
   async deleteBlogPost(id: number): Promise<boolean> {
@@ -689,6 +684,19 @@ export class MemStorage implements IStorage {
     };
     this.testimonials.set(id, testimonial);
     return testimonial;
+  }
+
+  async updateTestimonial(id: number, testimonialUpdate: Partial<InsertTestimonial>): Promise<Testimonial | undefined> {
+    const existing = this.testimonials.get(id);
+    if (!existing) return undefined;
+    
+    const updated: Testimonial = { ...existing, ...testimonialUpdate };
+    this.testimonials.set(id, updated);
+    return updated;
+  }
+
+  async deleteTestimonial(id: number): Promise<boolean> {
+    return this.testimonials.delete(id);
   }
 
   async getAllFAQs(active?: boolean): Promise<FAQ[]> {
