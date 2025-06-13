@@ -285,11 +285,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createFAQ(faq: InsertFAQ): Promise<FAQ> {
-    const [faq] = await db
+    const [newFaq] = await db
       .insert(faqs)
       .values(faq)
       .returning();
-    return faq;
+    return newFaq;
   }
 }
 
